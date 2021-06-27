@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop90"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@id/horizontalMarginTop" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stateAndCity"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            ads:layout_constraintBottom_toBottomOf="@id/horizontalMarginTop35"
+            ads:layout_constraintEnd_toStartOf="@id/verticleMarginLeft50"
+            ads:layout_constraintStart_toStartOf="@id/verticleMarginLeft"
+            ads:layout_constraintTop_toBottomOf="@id/horizontalMarginTop20">
+
+            <Spinner
+                android:id="@+id/stateSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                ads:layout_constraintBottom_toTopOf="@+id/citySelect"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/citySelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toBottomOf="@+id/stateSelect" />
+
+            <EditText
+                android:id="@+id/pincode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="110005"
+                android:hint="@string/enter_pincode"
+                android:inputType="number"
+                android:visibility="invisible"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="@+id/pincode"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop20"
+            ads:layout_constraintStart_toStartOf="@id/verticleMarginLeft"
+            ads:layout_constraintTop_toTopOf="@+id/horizontalMarginTop">
+
+            <RadioButton
+                android:id="@+id/slotByDist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/get_slots_by_district_name"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/getSlotByPin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/get_slots_by_pin_code"
+                android:textSize="12sp" />
+
+        </RadioGroup>
+
+        <Switch
+            android:id="@+id/getNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_notification_when_nslots_are_available"
+            android:textSize="12sp"
+            ads:layout_constraintBottom_toTopOf="@+id/horizontalMarginTop10"
+            ads:layout_constraintEnd_toEndOf="@+id/age45"
+            ads:layout_constraintStart_toStartOf="@+id/age18"
+            ads:layout_constraintTop_toTopOf="@+id/horizontalMarginTop"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <CheckBox
+            android:id="@+id/age18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/age_18"
+            android:textSize="12sp"
+            android:onClick="ifChecked"
+            ads:layout_constraintBottom_toTopOf="@id/dose1"
+            ads:layout_constraintEnd_toStartOf="@+id/age45"
+            ads:layout_constraintStart_toStartOf="@+id/verticleMarginLeft50"
+            ads:layout_constraintTop_toBottomOf="@+id/getNotif" />
+
+        <CheckBox
+            android:id="@+id/age45"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/age_45"
+            android:textSize="12sp"
+            android:onClick="ifChecked"
+            ads:layout_constraintBottom_toTopOf="@id/dose2"
+            ads:layout_constraintEnd_toStartOf="@+id/verticleMarginRight"
+            ads:layout_constraintStart_toEndOf="@+id/age18"
+            ads:layout_constraintTop_toBottomOf="@+id/getNotif" />
+
+        <CheckBox
+            android:id="@+id/dose1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dose_1"
+            android:textSize="12sp"
+            android:onClick="ifChecked"
+            ads:layout_constraintBottom_toTopOf="@id/getSlots"
+            ads:layout_constraintStart_toStartOf="@id/age18"
+            ads:layout_constraintTop_toBottomOf="@id/age18" />
+
+        <CheckBox
+            android:id="@+id/dose2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dose_2"
+            android:textSize="12sp"
+            android:onClick="ifChecked"
+            ads:layout_constraintBottom_toTopOf="@id/help"
+            ads:layout_constraintStart_toStartOf="@id/age45"
+            ads:layout_constraintTop_toBottomOf="@id/age45" />
+
+        <Button
+            android:id="@+id/getSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:text="@string/get_nslots"
+            android:textSize="12sp"
+            ads:layout_constraintBottom_toBottomOf="@+id/help"
+            ads:layout_constraintEnd_toStartOf="@id/help"
+            ads:layout_constraintStart_toStartOf="@+id/verticleMarginLeft50"
+            ads:layout_constraintTop_toTopOf="@+id/help" />
+
+        <Button
+            android:id="@+id/help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:text="@string/help"
+            android:textSize="12sp"
+            ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop35"
+            ads:layout_constraintEnd_toStartOf="@id/verticleMarginRight"
+            ads:layout_constraintStart_toEndOf="@+id/getSlots"
+            ads:layout_constraintTop_toBottomOf="@id/dose2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/vacAndRefresh"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop45"
+            ads:layout_constraintEnd_toEndOf="@id/verticleMarginRight"
+            ads:layout_constraintStart_toStartOf="@id/verticleMarginLeft"
+            ads:layout_constraintTop_toBottomOf="@id/horizontalMarginTop35">
+
+            <CheckBox
+                android:id="@+id/covishield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/covishield"
+                android:textSize="12sp"
+                android:onClick="ifChecked"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toStartOf="@+id/covaxin"
+                ads:layout_constraintHorizontal_bias="0.5"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
+
+            <CheckBox
+                android:id="@+id/covaxin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/covaxin"
+                android:textSize="12sp"
+                android:onClick="ifChecked"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toStartOf="@+id/sputnikv"
+                ads:layout_constraintHorizontal_bias="0.5"
+                ads:layout_constraintStart_toEndOf="@+id/covishield"
+                ads:layout_constraintTop_toTopOf="parent" />
+
+            <CheckBox
+                android:id="@+id/sputnikv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sputnik_v"
+                android:textSize="12sp"
+                android:onClick="ifChecked"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintHorizontal_bias="0.5"
+                ads:layout_constraintStart_toEndOf="@+id/covaxin"
+                ads:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Ad"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        ads:layout_constraintBottom_toBottomOf="@id/horizontalMarginBottom"
+        ads:layout_constraintEnd_toEndOf="@id/verticleMarginRight"
+        ads:layout_constraintStart_toStartOf="@id/verticleMarginLeft"
+        ads:layout_constraintTop_toBottomOf="@id/horizontalMarginTop90">
+
+        <!--<ScrollView
+                android:id="@+id/scrollView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp">
+
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout_conversion_absoluteHeight="19dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+            </ScrollView>-->
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="320dp"
+            android:layout_height="50dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-4051535501880183/4249578804"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    ca-app-pub-3940256099942544/6300978111-->
+    <!--    ca-app-pub-4051535501880183/4249578804-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recyclerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        ads:layout_constraintBottom_toBottomOf="@id/horizontalMarginTop90"
+        ads:layout_constraintEnd_toEndOf="@id/verticleMarginRight"
+        ads:layout_constraintStart_toStartOf="@id/verticleMarginLeft"
+        ads:layout_constraintTop_toTopOf="@id/horizontalMarginTop45">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticleMarginRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.99" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticleMarginLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.01" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticleMarginLeft50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.01" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.99" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop45"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.45" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalMarginTop10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        ads:layout_constraintGuide_begin="0dp"
+        ads:layout_constraintGuide_percent="0.1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

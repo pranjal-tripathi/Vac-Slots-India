@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter_pincode">Enter Pincode</string>
+    <string name="get_slots_by_district_name">Get Slots by District Name</string>
+    <string name="get_slots_by_pin_code">Get Slots by PIN Code</string>
+    <string name="send_notification_when_nslots_are_available">Send notification when\nslots are available</string>
+    <string name="age_18">Age 18+</string>
+    <string name="age_45">Age 45+</string>
+    <string name="dose_1">Dose 1</string>
+    <string name="dose_2">Dose 2</string>
+    <string name="get_nslots">Get\nSlots</string>
+    <string name="help">Help</string>
+    <string name="covishield">Covishield</string>
+    <string name="covaxin">Covaxin</string>
+    <string name="sputnik_v">Sputnik V</string>
+    <string name="okay">OKAY</string>
+</resources>
