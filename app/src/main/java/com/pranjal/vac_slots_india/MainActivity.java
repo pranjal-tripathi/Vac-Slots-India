@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar2 = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
         progressBar2.setVisibility(View.GONE);
         if(!isOnline()) {
@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
             helpFragment.show(getSupportFragmentManager(), helpFragment.getTag());
         });
 
-        state = (Spinner) findViewById(R.id.stateSelect);
-        city = (Spinner) findViewById(R.id.citySelect);
+        state = findViewById(R.id.stateSelect);
+        city = findViewById(R.id.citySelect);
         loadStates();
 
         state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int checkedRadioButtonId = radioGroup1.getCheckedRadioButtonId();
-        radioButton = (RadioButton) findViewById(checkedRadioButtonId);
+        radioButton = findViewById(checkedRadioButtonId);
         age18.setChecked(sharedPreferences.getBoolean("age18", false));
         age45.setChecked(sharedPreferences.getBoolean("age45", false));
         dose1.setChecked(sharedPreferences.getBoolean("dose1", false));
@@ -177,20 +177,24 @@ public class MainActivity extends AppCompatActivity {
         aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             if (isChecked) {
+                if(sharedPreferences.getBoolean("isServiceRunning", false)) {
+                    new Thread(() -> startService(new Intent(MainActivity.this, MyJobService.class))).start();
+                    editor.putBoolean("isServiceRunning", true);
+                }
                 editor.putBoolean("notify", true);
                 editor.apply();
             } else {
                 editor.putBoolean("notify", false);
                 editor.apply();
+                stopService(new Intent(MainActivity.this, MyJobService.class));
             }
         });
 
         radioGroup1.setOnCheckedChangeListener((radioGroup, i) -> {
             if (radioGroup.getCheckedRadioButtonId() != -1) {
                 int checkedRadioButtonId1 = radioGroup.getCheckedRadioButtonId();
-                radioButton = (RadioButton) findViewById(checkedRadioButtonId1);
-                if(isOnline()) getSlots.setEnabled(true);
-                else getSlots.setEnabled(false);
+                radioButton = findViewById(checkedRadioButtonId1);
+                getSlots.setEnabled(isOnline());
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                 if (radioButton.getText().toString().equals("Get Slots by District Name")) {
                     if(!isStateLoaded) loadStates();
@@ -316,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
                 districtAndId.put(districts.getDistrictName(), districts.getDistrictId());
             }
             showDistricts();
+            progressBar2.setVisibility(View.GONE);
         }, volleyError -> {
             volleyError.printStackTrace();
             Toast.makeText(
@@ -323,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
                     "ERROR RETRIEVING NAMES OF DISTRICTS " + volleyError.getMessage(),
                     Toast.LENGTH_SHORT)
                     .show();
+            progressBar2.setVisibility(View.GONE);
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
@@ -341,7 +347,6 @@ public class MainActivity extends AppCompatActivity {
             }
             isStateLoaded = true;
             showStates();
-            progressBar2.setVisibility(View.GONE);
         }, volleyError -> {
             volleyError.printStackTrace();
             Toast.makeText(
@@ -350,7 +355,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT)
                     .show();
             isStateLoaded = false;
-            progressBar2.setVisibility(View.GONE);
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
@@ -406,10 +410,13 @@ public class MainActivity extends AppCompatActivity {
     private void displaySlots(ArrayList<Centers> centersList) {
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, centersList);
         recyclerView.setAdapter(recyclerViewAdapter);
-        startService(new Intent(this, MyJobService.class));
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+        editor.putBoolean("isServiceRunning", true);
+        editor.apply();
+        new Thread(() -> startService(new Intent(MainActivity.this, MyJobService.class))).start();
     }
 
-    public void switchContent(int layout, DialogFragment fragment) {
+    public void switchContent(DialogFragment fragment) {
         fragment.show(getSupportFragmentManager(), fragment.getTag());
     }
 

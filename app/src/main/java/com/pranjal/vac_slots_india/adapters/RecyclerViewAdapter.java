@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-    private Context context;
-    private ArrayList<Centers> centersList;
+    private final Context context;
+    private final ArrayList<Centers> centersList;
 
     public RecyclerViewAdapter(Context context, ArrayList<Centers> centersList) {
         this.context = context;
@@ -53,6 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return centersList.size();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView cardName;
         public ViewHolder(@NonNull @NotNull View itemView) {
@@ -79,14 +80,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             bundle.putParcelableArrayList("sessions", sessionsList);
             bundle.putParcelableArrayList("vaccine", vaccineFeesList);
             fragment.setArguments(bundle);
-            switchContent(R.layout.slot_details_fragment, fragment);
+            switchContent(fragment);
         }
-        private void switchContent(int layout, DialogFragment fragment) {
+        private void switchContent(DialogFragment fragment) {
             if (context == null)
                 return;
             if (context instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) context;
-                mainActivity.switchContent(layout, fragment);
+                mainActivity.switchContent(fragment);
             }
 
         }

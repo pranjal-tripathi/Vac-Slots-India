@@ -151,31 +151,31 @@
             ads:layout_constraintStart_toStartOf="@id/age45"
             ads:layout_constraintTop_toBottomOf="@id/age45" />
 
-        <Button
-            android:id="@+id/getSlots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:text="@string/get_nslots"
-            android:textSize="12sp"
-            ads:layout_constraintBottom_toBottomOf="@+id/help"
-            ads:layout_constraintEnd_toStartOf="@id/help"
-            ads:layout_constraintStart_toStartOf="@+id/verticleMarginLeft50"
-            ads:layout_constraintTop_toTopOf="@+id/help" />
+    <Button
+        android:id="@+id/getSlots"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:text="@string/get_nslots"
+        android:textSize="12sp"
+        ads:layout_constraintBottom_toBottomOf="@+id/help"
+        ads:layout_constraintEnd_toStartOf="@id/help"
+        ads:layout_constraintStart_toStartOf="@+id/verticleMarginLeft50"
+        ads:layout_constraintTop_toTopOf="@+id/help" />
 
-        <Button
-            android:id="@+id/help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:text="@string/help"
-            android:textSize="12sp"
-            ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop35"
-            ads:layout_constraintEnd_toStartOf="@id/verticleMarginRight"
-            ads:layout_constraintStart_toEndOf="@+id/getSlots"
-            ads:layout_constraintTop_toBottomOf="@id/dose2" />
+    <Button
+        android:id="@+id/help"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:text="@string/help"
+        android:textSize="12sp"
+        ads:layout_constraintBottom_toTopOf="@id/horizontalMarginTop35"
+        ads:layout_constraintEnd_toStartOf="@id/verticleMarginRight"
+        ads:layout_constraintStart_toEndOf="@+id/getSlots"
+        ads:layout_constraintTop_toBottomOf="@id/dose2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/vacAndRefresh"

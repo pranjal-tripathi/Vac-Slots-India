@@ -97,20 +97,30 @@ public class MyJobService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Notification notification =
+                    new Notification.Builder(this, "Slot-Finder-Permanent-Notif-Channel")
+                            .setContentTitle("Searching Slots")
+                            .setStyle(new Notification.BigTextStyle()
+                                    .bigText("App is searching for available slots in the background. " +
+                                            "Make sure that you are connected to the internet. " +
+                                            "Please DO NOT kill the process."))
+                            .setSmallIcon(R.drawable.small_icon)
+                            .setContentIntent(pendingIntent)
+                            .setPriority(Notification.PRIORITY_LOW)
+                            .build();
+            startForeground(2, notification);
+        }
+        else {
+            NotificationCompat.Builder notif = new NotificationCompat.Builder(this, "Slot-Finder-Permanent-Notif-Channel")
+                    .setContentTitle("Searching Slots")
+                    .setContentText("Searching for available slots in the background.")
+                    .setSmallIcon(R.drawable.small_icon)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_LOW);
+            startForeground(2, notif.build());
+        }
 
-        Notification notification =
-                new Notification.Builder(this, "Slot-Finder-Permanent-Notif-Channel")
-                        .setContentTitle("Searching Slots")
-                        .setStyle(new Notification.BigTextStyle()
-                                .bigText("App is searching for available slots in the background. " +
-                                        "Make sure that you are connected to the internet. " +
-                                        "Please DO NOT kill the process."))
-                        .setSmallIcon(R.drawable.small_icon)
-                        .setContentIntent(pendingIntent)
-                        .setPriority(Notification.PRIORITY_LOW)
-                        .build();
-
-        startForeground(2, notification);
         super.onCreate();
     }
 
