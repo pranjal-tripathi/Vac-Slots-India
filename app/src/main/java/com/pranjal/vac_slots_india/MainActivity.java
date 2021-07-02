@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("OKAY", (dialog, which) -> {
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setCancelable(false)
                     .show();
         }
 

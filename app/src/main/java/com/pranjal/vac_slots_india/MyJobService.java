@@ -7,11 +7,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -39,10 +43,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MyJobService extends Service {
     SharedPreferences sharedPreferences;
     SQLiteDatabase db_write, db_read;
     DbHandler dbHandler;
+    Notification notification;
+    NotificationCompat.Builder notif;
+    Notification.Builder notifBuild;
+    NotificationCompat.Builder notifCompatBuild;
 
     @Nullable
     @Override
@@ -65,11 +74,14 @@ public class MyJobService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //Log.d("test", "onStartCommand function start");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        dbHandler = new DbHandler(this);
-        db_write = dbHandler.getWritableDatabase();
-        db_read = dbHandler.getReadableDatabase();
-        createNotificationChannel();
-        updateSlots();
+        if(sharedPreferences.getBoolean("notify", true)) {
+            dbHandler = new DbHandler(this);
+            db_write = dbHandler.getWritableDatabase();
+            db_read = dbHandler.getReadableDatabase();
+            createNotificationChannel();
+            updateNotification();
+            updateSlots();
+        }
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int sometime = 10 * 1000;
         long triggerTime = SystemClock.elapsedRealtime() + sometime;
@@ -81,60 +93,135 @@ public class MyJobService extends Service {
         return START_STICKY;
     }
 
+    private void updateNotification() {
+        //Log.d("test", "updateNotification function start");
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        String bigText = "", text = "", title = "";
+        if(!isOnline()) {
+            title = "Searching Stopped!";
+            bigText = "Unable to search for slots. " +
+                    "Internet connection not detected. ";
+            text = "Unable to search slots. No Internet.";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                notification = notifBuild.setContentTitle(title)
+                        .setStyle(new Notification.BigTextStyle()
+                                .bigText(bigText))
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .build();
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(2, notification);
+            }
+            else {
+                notifCompatBuild = new NotificationCompat.Builder(this, "Slot-Finder-Permanent-Notif-Channel");
+                notif = notifCompatBuild
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(2, notif.build());
+            }
+        }
+        else {
+            title = "Searching Slots";
+            bigText = "App is searching for available slots in the background. " +
+                    "Make sure that you remain connected to the internet. " +
+                    "Please DO NOT kill the process.";
+            text = "Searching for available slots.";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                notifBuild = new Notification.Builder(this, "Slot-Finder-Permanent-Notif-Channel");
+                notification = notifBuild.setContentTitle(title)
+                        .setStyle(new Notification.BigTextStyle()
+                                .bigText(bigText))
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .build();
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(2, notification);
+            }
+            else {
+                notifCompatBuild = new NotificationCompat.Builder(this, "Slot-Finder-Permanent-Notif-Channel");
+                notif = notifCompatBuild
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(2, notif.build());
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
         //Log.d("test", "onCreate function start");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Slot Searching (Permanent Notification)";
-            String description = "";
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel("Slot-Finder-Permanent-Notif-Channel", name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPreferences.getBoolean("notify", true)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "Slot Searching (Permanent Notification)";
+                String description = "";
+                int importance = NotificationManager.IMPORTANCE_LOW;
+                NotificationChannel channel = new NotificationChannel("Slot-Finder-Permanent-Notif-Channel", name, importance);
+                channel.setDescription(description);
+                NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            String bigText = "", text = "", title = "";
+            title = "Searching Slots";
+            bigText = "App is searching for available slots in the background. " +
+                    "Make sure that you remain connected to the internet. " +
+                    "Please DO NOT kill the process.";
+            text = "Searching for available slots.";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                notifBuild = new Notification.Builder(this, "Slot-Finder-Permanent-Notif-Channel");
+                notification = notifBuild.setContentTitle(title)
+                        .setStyle(new Notification.BigTextStyle()
+                                .bigText(bigText))
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .build();
+                startForeground(2, notification);
+            } else {
+                notifCompatBuild = new NotificationCompat.Builder(this, "Slot-Finder-Permanent-Notif-Channel");
+                notif = notifCompatBuild
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.small_icon)
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                startForeground(2, notif.build());
+            }
         }
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Notification notification =
-                    new Notification.Builder(this, "Slot-Finder-Permanent-Notif-Channel")
-                            .setContentTitle("Searching Slots")
-                            .setStyle(new Notification.BigTextStyle()
-                                    .bigText("App is searching for available slots in the background. " +
-                                            "Make sure that you are connected to the internet. " +
-                                            "Please DO NOT kill the process."))
-                            .setSmallIcon(R.drawable.small_icon)
-                            .setContentIntent(pendingIntent)
-                            .setPriority(Notification.PRIORITY_LOW)
-                            .build();
-            startForeground(2, notification);
-        }
-        else {
-            NotificationCompat.Builder notif = new NotificationCompat.Builder(this, "Slot-Finder-Permanent-Notif-Channel")
-                    .setContentTitle("Searching Slots")
-                    .setContentText("Searching for available slots in the background.")
-                    .setSmallIcon(R.drawable.small_icon)
-                    .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_LOW);
-            startForeground(2, notif.build());
-        }
-
         super.onCreate();
     }
 
     private void updateSlots() {
-        String apiKey = sharedPreferences.getString("apiKey", null);
-        if(apiKey!= null) {
-            if (apiKey.length() > 3)
-                updateSlotByPin(apiKey);
-            else
-                updateSlotByDist(apiKey);
+
+        if(isOnline()) {
+            String apiKey = sharedPreferences.getString("apiKey", null);
+            if (apiKey != null) {
+                if (apiKey.length() > 3)
+                    updateSlotByPin(apiKey);
+                else
+                    updateSlotByDist(apiKey);
+            }
         }
     }
 
     private void updateSlotByDist(String apiKey) {
+        //Log.d("test", "updateSlotByDist function start");
         String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         String slotByDistURL="https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id="
                 + apiKey + "&date=" + date + "extraStuffToPreventCaching" + System.currentTimeMillis();
@@ -202,35 +289,40 @@ public class MyJobService extends Service {
 
     private void sendNotif(List<Centers> centersListnotif) {
         //Log.d("test", "sendNotif function start");
-        String notif_text="", notif_title="";
+        StringBuilder notif_text= new StringBuilder();
+        String notif_title="";
         int notif_id=3;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.getBoolean("notify", true)) {
             for(Centers center : centersListnotif) {
                 for (Sessions session : center.getSessionsList()) {
-                    notif_text += "Age " + session.getMin_age_limit() + "+ | " + session.getVaccine() + " | " + session.getDate() + " | " +
-                            "D1 - " + session.getAvailable_capacity_dose1() + " | D2 - " + session.getAvailable_capacity_dose2()
-                            + "\n";
+                    notif_text.append("Age ").append(session.getMin_age_limit()).append("+ | ")
+                            .append(session.getVaccine()).append(" | ").append(session.getDate())
+                            .append(" | ").append("D1 - ").append(session.getAvailable_capacity_dose1())
+                            .append(" | D2 - ").append(session.getAvailable_capacity_dose2()).append("\n");
                 }
                 if(center.getSessionsList().size() != 0) {
                     notif_title = "Slot Available at " + center.getCenterName() + " | " + center.getPincode();
                     Intent intent = new Intent(this, NotificationView.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("notifMsg", notif_title+"\n\n"+notif_text);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("center", center);
+                    intent.putExtras(bundle);
                     int requestId = (int) System.currentTimeMillis();
                     PendingIntent pendingIntent = PendingIntent.getActivity(this, requestId, intent, 0);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Slot-Finder-Notif-Channel")
                             .setSmallIcon(R.drawable.small_icon)
                             .setContentTitle(notif_title)
                             .setStyle(new NotificationCompat.BigTextStyle()
-                                    .bigText(notif_text))
+                                    .bigText(notif_text.toString()))
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true);
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                     notificationManager.notify(notif_id, builder.build());
                     //Log.d("test", "sendNotif notification sent - " + requestId);
-                    notif_text = "";
+                    notif_text = new StringBuilder();
                     notif_id++;
                 }
             }
@@ -289,8 +381,14 @@ public class MyJobService extends Service {
         }
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     public void onDestroy() {
-       // Log.d("test", "onDestroy function called");
+        Log.d("test", "onDestroy function called");
         dbHandler.close();
         super.onDestroy();
     }

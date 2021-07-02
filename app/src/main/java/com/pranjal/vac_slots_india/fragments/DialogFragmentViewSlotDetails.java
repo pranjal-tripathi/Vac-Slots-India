@@ -24,15 +24,15 @@ public class DialogFragmentViewSlotDetails extends DialogFragment {
         ArrayList<Sessions> sessionsList = bundle.getParcelableArrayList("sessions");
         ArrayList<VaccineFees> vaccineFeesList = bundle.getParcelableArrayList("vaccine");
         Centers center = bundle.getParcelable("center");
-        String text="";
-        text += center.toStringDialog();
+        StringBuilder text= new StringBuilder();
+        text.append(center.toStringDialog());
         for(VaccineFees vaccineFees : vaccineFeesList)
-            text += vaccineFees.toStringDialog();
-        text+="\n";
+            text.append(vaccineFees.toStringDialog());
+        text.append("\n");
         for(Sessions session : sessionsList)
-            text += session.toStringDialog();
+            text.append(session.toStringDialog());
         return new AlertDialog.Builder(requireContext())
-                .setMessage(text)
+                .setMessage(text.toString())
                 .setPositiveButton("OKAY", (dialog, which) -> {})
                 .create();
     }
